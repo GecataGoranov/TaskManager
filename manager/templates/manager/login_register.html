@@ -5,21 +5,55 @@
     <div class="row mt-5">
         <div class="col-lg-3"></div>
         <div class="col-lg-6 border border-primary text-center" id="login-container">
+
+            {% if page ==  "login" %}
+
             <p class="h5 mt-4 fw-light">Please enter your username and password</p>
             <form method="POST">
                 {% csrf_token %}
-                {% for field in form %}
+                {% for field in login_form %}
                     <div class="form-floating mt-4 mb-3 mx-5">
                         {{ field }}
                         <label for="{{field.label}}" class="fw-light">{{field.label}}</label>
                     </div>
                 {% endfor %}
-                <input class="btn btn-primary fw-light" type="Submit" value="Log in" />
+                <input class="btn btn-primary fw-light" id="login-submit" type="Submit" value="Log in" />
             </form>
+            {% if messages %}
+                {% for message in messages %}
+                <p class="h5 fw-light text-red mt-2">{{message}}</p>
+                {% endfor %}
+            {% endif %}
             <p class="fw-light mb-1 mt-2">Not registered yet?</p>
-            <p class="mb-3"><a class="fw-light" href="#">Sign up</a></p>
+            <p class="mb-3"><a class="fw-light" href="{% url 'register' %}">Sign up</a></p>
+
+
+            {% else %}
+
+            <p class="h5 mt-4 fw-light">Register here</p>
+
+            <form method="POST">
+                {% csrf_token %}
+                {% for field in register_form %}
+                    <div class="form-floating mt-4 mb-3 mx-5">
+                        {{ field }}
+                        <label for="{{field.label}}" class="fw-light">{{field.label}}</label>
+                    </div>
+                {% endfor %}
+                <input class="btn btn-primary fw-light" id="register-submit" type="submit" value="Sign Up" />
+            </form>
+            {% if messages %}
+                {% for message in messages %}
+                <p class="h5 fw-light text-red mt-2">{{message}}</p>
+                {% endfor %}
+            {% endif %}
+
+            <p class="fw-light mb-1 mt-2">Already a user?</p>
+            <p class="mb-3"><a class="fw-light" href="{% url 'login' %}">Log in</a></p>
+
+            {% endif %}
+
         </div>
         <div class="col-lg-3"></div>
     </div>
-
 {% endblock %}
