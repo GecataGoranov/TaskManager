@@ -1,21 +1,25 @@
 {% extends "manager/layout.html" %}
 
 {% block body %}
+
     <div class="row mt-5">
-        <div class="col-3"></div>
-        <div class="col-6 border" style="border-radius: 15px;">
+        <div class="col-lg-3"></div>
+        <div class="col-lg-6 border border-primary text-center" id="login-container">
+            <p class="h5 mt-4 fw-light">Please enter your username and password</p>
             <form method="POST">
                 {% csrf_token %}
-                {{ form.as_p }}
-                <!-- {% for field in form %}
-                    <div class="form-floating mt-2">
+                {% for field in form %}
+                    <div class="form-floating mt-4 mb-3 mx-5">
                         {{ field }}
+                        <label for="{{field.label}}" class="fw-light">{{field.label}}</label>
                     </div>
-                {% endfor %} -->
-                <input class="btn btn-primary mb-3" type="Submit" value="Log in" />
+                {% endfor %}
+                <input class="btn btn-primary fw-light" type="Submit" value="Log in" />
             </form>
+            <p class="fw-light mb-1 mt-2">Not registered yet?</p>
+            <p class="mb-3"><a class="fw-light" href="#">Sign up</a></p>
         </div>
-        <div class="col-3"></div>
+        <div class="col-lg-3"></div>
     </div>
 
 {% endblock %}

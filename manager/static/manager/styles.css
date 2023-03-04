@@ -6,3 +6,9 @@ body{
 #search-input{
     color: whitesmoke;
 }
+
+#login-container{
+    border-radius: 15px;
+    background-color: #555555;
+}
+
