@@ -2,6 +2,8 @@ from django.forms import ModelForm
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
+from .models import Assignments
+
 
 class LoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
@@ -34,3 +36,7 @@ class RegisterForm(UserCreationForm):
                                                      "id":"password-login-input",
                                                      "placeholder":"Confirm Password"})
         self.fields["password2"].label = "Confirm Password"
+
+
+class AddAssignmentForm(forms.Form):
+    ...

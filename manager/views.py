@@ -3,16 +3,21 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.http import HttpResponse
 
 
 from .forms import LoginForm, RegisterForm
+from .models import Categories, Assignments
 
 
 # Create your views here.
 
 
 def index(request):
-    return render(request, "manager/index.html", {"page":"assignments"})
+    assignments = Assignments.objects.filter(creator = request.user)
+    return render(request, "manager/index.html", {
+        "page":"assignments",
+        "assignments":assignments,})
 
 
 def loginPage(request):
