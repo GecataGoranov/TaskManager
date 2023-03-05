@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.http import HttpResponse
+from django.utils import timezone
+from django.contrib.humanize.templatetags.humanize import naturaltime
 
 
 from .forms import LoginForm, RegisterForm
@@ -14,10 +16,15 @@ from .models import Categories, Assignments
 
 
 def index(request):
-    assignments = Assignments.objects.filter(creator = request.user)
+    assignments = Assignments.objects.filter(creator = request.user.id)
+    now = timezone.now()
+    for assignment in assignments:
+        assignment.time_left = assignment.due_time - now
+        assignment.time_left_str = naturaltime(assignment.time_left)
     return render(request, "manager/index.html", {
         "page":"assignments",
-        "assignments":assignments,})
+        "assignments":assignments,
+        "now":now})
 
 
 def loginPage(request):
