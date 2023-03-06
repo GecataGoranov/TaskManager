@@ -38,5 +38,15 @@ class RegisterForm(UserCreationForm):
         self.fields["password2"].label = "Confirm Password"
 
 
-class AddAssignmentForm(forms.Form):
-    ...
+class AddAssignmentForm(ModelForm):
+    category = forms.ModelChoiceField(queryset=Assignments.objects.all(), empty_label="Add category")
+
+    class Meta:
+        model = Assignments
+        fields = ["category", "description", "due_time"]
+    
+    def __init__(self, *args, **kwargs):
+        super(AddAssignmentForm, self).__init__(*args, **kwargs)
+        self.fields["category"].widget.attrs.update({"class":"form-control bg-secondary text-light",
+                                                     "id":"add-assignment-input",})
+        self.fields["category"].label = ""

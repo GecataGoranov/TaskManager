@@ -1,0 +1,26 @@
+{% extends "manager/layout.html" %}
+
+{% block body %}
+<div class="row">
+    <div class="col-3"></div>
+    <div class="col-6 mt-5">
+        <div class="border border-primary assignment-container mb-4">
+            <div class="mt-5 mb-3 mx-5">
+                <form>
+                    {% for field in add_assignment_form %}
+        
+                    {{field}}
+                    <!-- <label for="{{field.label}}" class="fw-light">{{field.label}}</label> -->
+        
+                {% endfor %}
+        
+                <input class="btn btn-primary" type="submit" value="Add Assignment" />
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-3"></div>
+</div>
+
+
+{% endblock %}

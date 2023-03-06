@@ -5,10 +5,9 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.utils import timezone
-from django.contrib.humanize.templatetags.humanize import naturaltime
 
 
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm, AddAssignmentForm
 from .models import Categories, Assignments
 
 
@@ -18,13 +17,12 @@ from .models import Categories, Assignments
 def index(request):
     assignments = Assignments.objects.filter(creator = request.user.id)
     now = timezone.now()
-    for assignment in assignments:
-        assignment.time_left = assignment.due_time - now
-        assignment.time_left_str = naturaltime(assignment.time_left)
+    add_assignment_form = AddAssignmentForm()
     return render(request, "manager/index.html", {
         "page":"assignments",
         "assignments":assignments,
-        "now":now})
+        "now":now,
+        "add_assignment_form":add_assignment_form})
 
 
 def loginPage(request):
@@ -77,4 +75,11 @@ def registerPage(request):
     return render(request, "manager/login_register.html", {
         "page":"register",
         "register_form":register_form
+    })
+
+def add_assignment(request):
+    add_assignment_form = AddAssignmentForm()
+    return render(request, "manager/add_assignment.html", {
+        "page":"add",
+        "add_assignment_form":add_assignment_form,
     })
