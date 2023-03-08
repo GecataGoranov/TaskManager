@@ -77,6 +77,7 @@ def registerPage(request):
         "register_form":register_form
     })
 
+
 def add_assignment(request):
     add_assignment_form = AddAssignmentForm()
     return render(request, "manager/add_assignment.html", {

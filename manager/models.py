@@ -8,8 +8,8 @@ class Categories(models.Model):
     category = models.CharField(max_length=64)
 
     def __str__(self):
-        return self.category
-
+        return f"{self.category}"
+    
 
 class Assignments(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="assignment_creator")
@@ -22,4 +22,7 @@ class Assignments(models.Model):
 
     class Meta:
         ordering = ["due_time"]
+
+    def __str__(self):
+        return f"{self.category}"
 
