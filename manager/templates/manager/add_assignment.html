@@ -9,6 +9,8 @@
                 <p class="h5 fw-light text-center mb-2">Add an Assignment.</p>
                 <form method="POST">
 
+                    {% csrf_token %}
+
                     {% for field in add_assignment_form %}
 
                     <div class="form-floating">
@@ -18,10 +20,10 @@
         
                     {% endfor %}
                     <label for="add-assignment-date">Specify a date for the Assignment</label>
-                    <input type="date" id="add-assignment-date" class="form-control bg-secondary mb-3" style="color: #b1afa9;" />
+                    <input type="date" id="add-assignment-date" name="date" class="form-control bg-secondary mb-3" style="color: #b1afa9;" />
 
                     <label for="add-assignment-date">Specify a time for the Assignment</label>
-                    <input type="time" id="add-assignment-time" class="form-control bg-secondary mb-3" style="color: #b1afa9;" />
+                    <input type="time" id="add-assignment-time" name="time" class="form-control bg-secondary mb-3" style="color: #b1afa9;" />
                     <div class="text-center">
                         <input class="btn btn-primary mt-1" type="submit" value="Add Assignment" />
                     </div>

@@ -18,8 +18,8 @@
                     <div class="col-11">
                         <h5 class="mt-4 ms-2 text-center">{{assignment.category.category}}</h5>
                     </div>
-                    <div class="col-1">
-                        <a class="mt-3" href="#">Edit</a>
+                    <div class="col-1 mt-4">
+                        <p style="color: #b1afa9;" id="edit-assignment-{{assignment.id}}">Edit</p>
                     </div>
                 </div>
                 <hr>
@@ -34,6 +34,10 @@
                         <button class="btn btn-primary mb-3 me-3">Completed</button>
                     </div>
                 </div>
+            </div>
+
+            <div class="border border-primary edit-assignment-container" style="display: none;">
+
             </div>
 
             {% endfor %}

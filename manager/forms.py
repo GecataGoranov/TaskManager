@@ -2,7 +2,7 @@ from django.forms import ModelForm
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
-from .models import Assignments
+from .models import Assignments, Categories
 
 
 class LoginForm(AuthenticationForm):
@@ -39,7 +39,7 @@ class RegisterForm(UserCreationForm):
 
 
 class AddAssignmentForm(ModelForm):
-    category = forms.ModelChoiceField(queryset=Assignments.objects.all(), empty_label="Add category")
+    category = forms.ModelChoiceField(queryset=Categories.objects.all(), empty_label="Add category")
     # due_time = forms.DateTimeField(input_formats=["%Y-%m-%d %H:%M:%S"])
 
     class Meta:
