@@ -13,10 +13,10 @@
 
             {% for assignment in assignments %}
 
-            <div class="border border-primary assignment-container mb-4">
+            <div {% if assignment.missed == True %} class="border border-danger assignment-container mb-4" {% else %} class="border border-primary assignment-container mb-4" {% endif %} data-overdue="{{now | timesince:assignment.due_time}}">
                 <div class="row">
                     <div class="col-11">
-                        <h5 class="mt-4 ms-2 text-center">{{assignment.category.category}}</h5>
+                        <h5 class="mt-4 ms-2 text-center" {% if assignment.missed == True %} style="color: #ff5555;" {% endif %}>{{assignment.category.category}}</h5>
                     </div>
                     <div class="col-1 mt-4">
                         <p style="color: #b1afa9;" id="edit-assignment-{{assignment.id}}">Edit</p>
@@ -27,7 +27,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-3">
-                        <p class="ms-3 mt-2 fw-light">Due: {{now | timesince:assignment.due_time}}</p>
+                        <p class="ms-3 mt-2 fw-light">{% if assignment.missed %}Missing{% else %}Due: {{now | timesince:assignment.due_time}}{% endif %}</p>
                     </div>
                     <div class="col-6"></div>
                     <div class="col-3 text-end">

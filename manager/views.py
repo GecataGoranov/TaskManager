@@ -18,12 +18,18 @@ from .models import Categories, Assignments
 def index(request):
     assignments = Assignments.objects.filter(creator = request.user.id)
     now = timezone.now()
+    for assignment in assignments.filter(missed=False):
+        if assignment.due_time < now:
+            assignment.missed = True
+            assignment.save()
+    categories = Categories.objects.filter(creator = request.user.id)
     add_assignment_form = AddAssignmentForm()
     return render(request, "manager/index.html", {
         "page":"assignments",
         "assignments":assignments,
         "now":now,
-        "add_assignment_form":add_assignment_form})
+        "add_assignment_form":add_assignment_form,
+        "categories":categories,})
 
 
 def loginPage(request):

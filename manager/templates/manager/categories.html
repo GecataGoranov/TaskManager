@@ -1,1 +1,14 @@
-TODO
+<h2>Your categories:</h2>
+
+
+<form method="post">
+    {% csrf_token %}
+</form>
+
+{% for category in categories %}
+
+<div class="row">
+    <a class="h3" href="#">{{category}}</a>
+</div>
+
+{% endfor %}
