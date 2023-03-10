@@ -39,16 +39,20 @@ class RegisterForm(UserCreationForm):
 
 
 class AddAssignmentForm(ModelForm):
-    category = forms.ModelChoiceField(queryset=Categories.objects.all(), empty_label="Add category")
-    # due_time = forms.DateTimeField(input_formats=["%Y-%m-%d %H:%M:%S"])
+    category = forms.ModelChoiceField(queryset=Categories.objects.all(), empty_label="Add category", required=False)
+    create_category = forms.CharField(required=False, widget=forms.TextInput(attrs={"id":"create-category",
+                                                                "style":"display: none;",
+                                                                "class":"form-control bg-secondary text-light mb-4"}))
+
 
     class Meta:
         model = Assignments
-        fields = ["category", "description"]
-    
+        fields = ["category", "create_category", "description"]
+        ordering = ["category", "create_category"]
+
     def __init__(self, *args, **kwargs):
         super(AddAssignmentForm, self).__init__(*args, **kwargs)
-        self.fields["category"].widget.attrs.update({"class":"form-control bg-secondary text-light mb-4",
+        self.fields["category"].widget.attrs.update({"class":"form-control bg-secondary text-light mb-1",
                                                      "id":"add-assignment-category",})
         self.fields["category"].label = "Add a category"
 

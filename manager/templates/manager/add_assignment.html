@@ -13,12 +13,19 @@
 
                     {% for field in add_assignment_form %}
 
-                    <div class="form-floating">
+                    <div class="form-floating" id="{{field.id}}">
                         {{field}}
-                        <label for="{{field.label}}" class="fw-light">{{field.label}}</label>
+                        <label for="{{field.label}}" {% if field.label == "Add a category" %} id="add-assignment-category-label" {% endif %} class="fw-light">{{field.label}}</label>
                     </div>
+
+                    {% if field.label == "Add a category" %}
+
+                    <button class="btn btn-link fw-light mb-1" id="create-category-button"><i class="fas fa-plus me-1"></i>Create a category</button>
+
+                    {% endif %}
         
                     {% endfor %}
+
                     <label for="add-assignment-date">Specify a date for the Assignment</label>
                     <input type="date" id="add-assignment-date" name="date" class="form-control bg-secondary mb-3" style="color: #b1afa9;" />
 

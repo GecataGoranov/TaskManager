@@ -92,6 +92,10 @@ def add_assignment(request):
         time = request.POST.get("time")
         if form.is_valid:
             assignment = form.save(commit=False)
+            return HttpResponse(assignment)
+            if not assignment.category:
+                new_category = Categories.objects.create(creator=request.user, category = request.POST.get("create_category"))
+                return HttpResponse(new_category)
             assignment.creator = request.user
             due_date = request.POST["date"]
             due_time = request.POST["time"]
