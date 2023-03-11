@@ -32,3 +32,13 @@ body{
     text-decoration: none;
     color: #00B4BE;
 }
+
+#remove-category-button{
+    padding-left: 0%;
+    text-decoration: #ff5555;
+}
+
+#remove-category-submit{
+    padding-left: 0.5%;
+    text-decoration: #ff5555;
+}

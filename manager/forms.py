@@ -42,7 +42,7 @@ class AddAssignmentForm(ModelForm):
     category = forms.ModelChoiceField(queryset=Categories.objects.all(), empty_label="Add category", required=False)
     create_category = forms.CharField(required=False, widget=forms.TextInput(attrs={"id":"create-category",
                                                                 "style":"display: none;",
-                                                                "class":"form-control bg-secondary text-light mb-4"}))
+                                                                "class":"form-control bg-secondary text-light mb-4",}))
 
 
     class Meta:

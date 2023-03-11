@@ -16,7 +16,12 @@ from .models import Categories, Assignments
 
 
 def index(request):
-    assignments = Assignments.objects.filter(creator = request.user.id)
+    if request.method == "POST":
+        category_to_remove_str = request.POST.get("category")
+        category_to_remove = Categories.objects.get(creator=request.user, category=category_to_remove_str)
+        category_to_remove.delete()
+    
+    assignments = Assignments.objects.filter(creator = request.user.id, completed=False)
     now = timezone.now()
     for assignment in assignments.filter(missed=False):
         if assignment.due_time < now:
@@ -90,12 +95,16 @@ def add_assignment(request):
         form = AddAssignmentForm(request.POST)
         date = request.POST.get("date")
         time = request.POST.get("time")
-        if form.is_valid:
+
+        if form.is_valid():
             assignment = form.save(commit=False)
-            return HttpResponse(assignment)
-            if not assignment.category:
-                new_category = Categories.objects.create(creator=request.user, category = request.POST.get("create_category"))
-                return HttpResponse(new_category)
+            try:
+                return HttpResponse(assignment.category)
+            except:
+                new_category = Categories.objects.create(creator=request.user, category=request.POST.get("create_category"))
+                new_category.save()
+                assignment.category = new_category
+            
             assignment.creator = request.user
             due_date = request.POST["date"]
             due_time = request.POST["time"]

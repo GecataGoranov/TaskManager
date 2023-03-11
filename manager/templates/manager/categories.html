@@ -8,7 +8,22 @@
 {% for category in categories %}
 
 <div class="row">
-    <a class="h3" href="#">{{category}}</a>
+    <a class="h3 text-decoration-none" style="color: #9E9DFF;" href="#">{{category}}</a>
 </div>
 
 {% endfor %}
+
+<button class="btn btn-link text-danger" id="remove-category-button"><h4>Remove a category</h4></button>
+
+<form method="POST" id="remove-category-form" style="display: none;">
+    {% csrf_token %}
+    <select class="form-control bg-secondary text-light" name="category">
+        <option>Choose a category</option>
+        {% for category in categories %} 
+
+            <option>{{category}}</option>
+
+        {% endfor %}
+    </select>
+    <input class="btn btn-link text-danger mt-2" id="remove-category-submit" type="submit" value="Remove" />
+</form>
