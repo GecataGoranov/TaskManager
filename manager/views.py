@@ -16,12 +16,17 @@ from .models import Categories, Assignments
 
 
 def index(request):
+    q = request.GET.get("q") if request.GET.get("q") != None else ""
+
     if request.method == "POST":
         category_to_remove_str = request.POST.get("category")
-        category_to_remove = Categories.objects.get(creator=request.user, category=category_to_remove_str)
-        category_to_remove.delete()
-    
-    assignments = Assignments.objects.filter(creator = request.user.id, completed=False)
+        try:
+            category_to_remove = Categories.objects.get(creator=request.user, category=category_to_remove_str)
+            category_to_remove.delete()
+        except:
+            ...
+
+    assignments = Assignments.objects.filter(creator = request.user.id, completed=False, category__category__icontains=q)
     now = timezone.now()
     for assignment in assignments.filter(missed=False):
         if assignment.due_time < now:
@@ -117,4 +122,22 @@ def add_assignment(request):
     return render(request, "manager/add_assignment.html", {
         "page":"add",
         "add_assignment_form":add_assignment_form,
+    })
+
+
+def completed(request):
+    pk = request.GET.get("pk")
+    q = request.GET.get("q") if request.GET.get("q") != None else ""
+    if pk:
+        newly_completed_assignment = Assignments.objects.get(id=pk)
+        newly_completed_assignment.completed = True
+        newly_completed_assignment.save()
+
+    categories = Categories.objects.filter(creator=request.user.id)
+    assignments = Assignments.objects.filter(creator=request.user.id, completed=True, category__category__icontains=q)
+
+    return render(request, "manager/completed.html", {
+        "page":"completed",
+        "categories":categories,
+        "assignments":assignments
     })

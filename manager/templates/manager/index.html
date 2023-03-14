@@ -1,66 +1,36 @@
-{% extends "manager/layout.html" %}
+{% extends "manager/main.html" %}
 
-{% block body %}
+{% block assignments %}
 
-{% if user.is_authenticated %}
+{% for assignment in assignments %}
 
-    {% load humanize %}
-    <div class="row mt-5">
+<div {% if assignment.missed == True %} class="border border-danger assignment-container mb-4" {% else %} class="border border-primary assignment-container mb-4" {% endif %} data-overdue="{{now | timesince:assignment.due_time}}">
+    <div class="row">
+        <div class="col-11">
+            <h5 class="mt-4 ms-2 text-center" {% if assignment.missed == True %} style="color: #ff5555;" {% endif %}>{{assignment.category.category}}</h5>
+        </div>
+        <div class="col-1 mt-4">
+            <button class="btn btn-link text-light" style="color: #b1afa9; text-decoration: none;" id="edit-assignment-{{assignment.id}}">Edit</button>
+        </div>
+    </div>
+    <hr>
+    <p class="h5 ms-3 my-2 fw-light">{{assignment.description}}</p>
+    <hr>
+    <div class="row">
         <div class="col-3">
-            <div class="border border-secondary categories-container">
-                <div class="mx-3 my-3">
-
-                    {% include "manager/categories.html" %}
-
-                </div>
-            </div>
+            <p class="ms-3 mt-2 fw-light">{% if assignment.missed %}Missing{% else %}Due: {{now | timesince:assignment.due_time}}{% endif %}</p>
         </div>
-        <div class="col-9">
-
-            {% for assignment in assignments %}
-
-            <div {% if assignment.missed == True %} class="border border-danger assignment-container mb-4" {% else %} class="border border-primary assignment-container mb-4" {% endif %} data-overdue="{{now | timesince:assignment.due_time}}">
-                <div class="row">
-                    <div class="col-11">
-                        <h5 class="mt-4 ms-2 text-center" {% if assignment.missed == True %} style="color: #ff5555;" {% endif %}>{{assignment.category.category}}</h5>
-                    </div>
-                    <div class="col-1 mt-4">
-                        <button class="btn btn-link text-light" style="color: #b1afa9; text-decoration: none;" id="edit-assignment-{{assignment.id}}">Edit</button>
-                    </div>
-                </div>
-                <hr>
-                <p class="h5 ms-3 my-2 fw-light">{{assignment.description}}</p>
-                <hr>
-                <div class="row">
-                    <div class="col-3">
-                        <p class="ms-3 mt-2 fw-light">{% if assignment.missed %}Missing{% else %}Due: {{now | timesince:assignment.due_time}}{% endif %}</p>
-                    </div>
-                    <div class="col-6"></div>
-                    <div class="col-3 text-end">
-                        <button class="btn btn-primary mb-3 me-3">Completed</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="border border-primary edit-assignment-container" style="display: none;">
-
-            </div>
-
-            {% endfor %}
-
+        <div class="col-6"></div>
+        <div class="col-3 text-end">
+            <a class="btn btn-primary mb-3 me-3" href="{% url 'completed' %}?pk={{assignment.id}}">Completed</a>
         </div>
     </div>
+</div>
 
-{% else %}
+<div class="border border-primary edit-assignment-container" style="display: none;">
 
-    <div class="row mt-5">
-        <div class="col-3"></div>
-        <div class="col-6 text-center">
-            <h1>Please log in or register in order to see your assignments!</h1>
-        </div>
-        <div class="col-3"></div>
-    </div>
+</div>
 
-{% endif %}
+{% endfor %}
 
 {% endblock %}

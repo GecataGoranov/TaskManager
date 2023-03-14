@@ -15,9 +15,9 @@
                 </li>
                 <li class="nav-item">
                     {% if page == "completed" %}
-                    <a class="nav-link active" href="#">Completed</a>
+                    <a class="nav-link active" href="{% url 'completed' %}">Completed</a>
                     {% else %}
-                    <a class="nav-link" href="#">Completed</a>
+                    <a class="nav-link" href="{% url 'completed' %}">Completed</a>
                     {% endif %}
                 </li>
                 <li class="nav-item">
@@ -43,8 +43,8 @@
                 </li>
                 {% endif %}
             </ul>
-            <form class="d-flex ms-auto me-2">
-                <input class="form-control me-2 bg-dark ml-auto" id="search-input" type="search" placeholder="Search" aria-label="Search">
+            <form class="d-flex ms-auto me-2" method="GET">
+                <input class="form-control me-2 bg-dark ml-auto" name="q" id="search-input" type="search" placeholder="Search" aria-label="Search">
                 <button class="btn btn-outline-primary" type="submit">Search</button>
             </form>
             {% if user.is_authenticated %}

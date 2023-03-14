@@ -24,4 +24,15 @@ document.addEventListener("DOMContentLoaded", () => {
         })
     }
 
+    var category_links = document.querySelectorAll(".category-link");
+    if(category_links){
+        category_links.forEach(link => {
+            link.addEventListener("mouseover", () => {
+                link.style.color = "#9E9D99";
+            })
+            link.addEventListener("mouseout", () => {
+                link.style.color = "#9E9DFF";
+            })
+        })
+    }
 })

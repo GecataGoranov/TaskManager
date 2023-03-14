@@ -8,7 +8,7 @@
 {% for category in categories %}
 
 <div class="row">
-    <a class="h3 text-decoration-none" style="color: #9E9DFF;" href="#">{{category}}</a>
+    <a class="h3 text-decoration-none category-link" style="color: #9E9DFF;" {%if page == "assignments" %} href="{% url 'index' %}?q={{category}}" {% elif page == "completed" %} href="{% url 'completed' %}?q={{category}}" {% endif %}>{{category}}</a>
 </div>
 
 {% endfor %}

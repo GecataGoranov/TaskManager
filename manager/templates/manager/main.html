@@ -1,0 +1,39 @@
+{% extends "manager/layout.html" %}
+
+{% block body %}
+
+{% if user.is_authenticated %}
+
+    {% load humanize %}
+    <div class="row mt-5">
+        <div class="col-3">
+            <div class="border border-secondary categories-container">
+                <div class="mx-3 my-3">
+
+                    {% include "manager/categories.html" %}
+
+                </div>
+            </div>
+        </div>
+        <div class="col-9">
+
+            {% block assignments %}
+
+            {% endblock %}
+
+        </div>
+    </div>
+
+{% else %}
+
+    <div class="row mt-5">
+        <div class="col-3"></div>
+        <div class="col-6 text-center">
+            <h1>Please log in or register in order to see your assignments!</h1>
+        </div>
+        <div class="col-3"></div>
+    </div>
+
+{% endif %}
+
+{% endblock %}
