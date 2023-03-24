@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.utils import timezone
+from django.views.generic import ListView
 
 import datetime
 
@@ -19,12 +20,17 @@ def index(request):
     q = request.GET.get("q") if request.GET.get("q") != None else ""
 
     if request.method == "POST":
-        category_to_remove_str = request.POST.get("category")
-        try:
-            category_to_remove = Categories.objects.get(creator=request.user, category=category_to_remove_str)
-            category_to_remove.delete()
-        except:
-            ...
+
+        if category_to_remove_str:=request.POST.get("category"):
+            try:
+                category_to_remove = Categories.objects.get(creator=request.user, category=category_to_remove_str)
+                category_to_remove.delete()
+            except:
+                pass
+        
+        else:
+            edited_assignment_content = request.POST.get("edit-assignment")
+            return HttpResponse(edited_assignment_content)
 
     assignments = Assignments.objects.filter(creator = request.user.id, completed=False, category__category__icontains=q)
     now = timezone.now()
@@ -34,6 +40,16 @@ def index(request):
             assignment.save()
     categories = Categories.objects.filter(creator = request.user.id)
     add_assignment_form = AddAssignmentForm()
+    
+    for assignment in assignments:
+        if not assignment.time_str:
+            time = assignments.values_list("due_time__time", flat=True).get(id=assignment.id)
+            assignment.time_str = time.strftime("%H:%M")
+        if not assignment.date_str:
+            date = assignments.values_list("due_time__date", flat=True).get(id=assignment.id)
+            assignment.date_str = date.strftime("%m/%d/%Y")
+        assignment.save()
+
     return render(request, "manager/index.html", {
         "page":"assignments",
         "assignments":assignments,
@@ -125,19 +141,31 @@ def add_assignment(request):
     })
 
 
-def completed(request):
-    pk = request.GET.get("pk")
-    q = request.GET.get("q") if request.GET.get("q") != None else ""
-    if pk:
-        newly_completed_assignment = Assignments.objects.get(id=pk)
-        newly_completed_assignment.completed = True
-        newly_completed_assignment.save()
 
-    categories = Categories.objects.filter(creator=request.user.id)
-    assignments = Assignments.objects.filter(creator=request.user.id, completed=True, category__category__icontains=q)
 
-    return render(request, "manager/completed.html", {
-        "page":"completed",
-        "categories":categories,
-        "assignments":assignments
-    })
+class CompletedListView(ListView):
+    template_name = "manager/completed.html"
+    model = Assignments
+    context_object_name = "assignments"
+
+    def get_queryset(self):
+        q = self.request.GET.get("q") if self.request.GET.get("q") is not None else ""
+        return Assignments.objects.filter(creator=self.request.user.id, completed=True, category__category__icontains=q)
+
+ 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["page"] = "completed"
+        context["categories"] = Categories.objects.filter(creator=self.request.user.id)
+        return context
+
+
+    def get(self, request, *args, **kwargs):
+        pk = request.GET.get("pk")
+        if pk:
+            newly_completed_assignment = Assignments.objects.get(id=pk)
+            newly_completed_assignment.completed = True
+            newly_completed_assignment.save()     
+        return super().get(request, *args, **kwargs)   
+
+

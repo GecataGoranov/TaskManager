@@ -7,5 +7,5 @@ urlpatterns = [
     path("logout", views.logoutPage, name="logout"),
     path("register", views.registerPage, name="register"),
     path("add-assignment", views.add_assignment, name="add"),
-    path("completed", views.completed, name="completed")
+    path("completed", views.CompletedListView.as_view(), name="completed")
 ]

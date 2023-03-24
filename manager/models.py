@@ -19,6 +19,8 @@ class Assignments(models.Model):
     description = models.TextField()
     completed = models.BooleanField(default=False)
     missed = models.BooleanField(default=False)
+    time_str = models.CharField(max_length=15, blank=True, null=True)
+    date_str = models.CharField(max_length=15, blank=True, null=True)
 
     class Meta:
         ordering = ["due_time"]

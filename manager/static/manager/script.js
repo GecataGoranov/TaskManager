@@ -35,4 +35,14 @@ document.addEventListener("DOMContentLoaded", () => {
             })
         })
     }
+
+    var edit_buttons = document.querySelectorAll(".edit-button")
+    if(edit_buttons){
+        edit_buttons.forEach(edit_button => {
+            edit_button.addEventListener("click", () => {
+                document.querySelector(".assignment-container").style.display = "none";
+                document.querySelector(".edit-assignment-container").style.display = "block";
+            })
+        })
+    }
 })
