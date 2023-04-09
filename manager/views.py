@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.utils import timezone
 from django.views.generic import ListView
+from django.views.generic.edit import CreateView
 
 import datetime
 
@@ -21,12 +22,15 @@ def index(request):
 
     if request.method == "POST":
 
+
         if category_to_remove_str:=request.POST.get("category"):
+            Categories.objects.all().delete()
             try:
                 category_to_remove = Categories.objects.get(creator=request.user, category=category_to_remove_str)
                 category_to_remove.delete()
             except:
                 pass
+
         
         else:
             edited_assignment_content = request.POST.get("edit-assignment")
@@ -120,7 +124,8 @@ def add_assignment(request):
         if form.is_valid():
             assignment = form.save(commit=False)
             try:
-                return HttpResponse(assignment.category)
+                if assignment.category:
+                    pass
             except:
                 new_category = Categories.objects.create(creator=request.user, category=request.POST.get("create_category"))
                 new_category.save()
@@ -140,6 +145,16 @@ def add_assignment(request):
         "add_assignment_form":add_assignment_form,
     })
 
+
+
+class AddAssignmentCreateView(CreateView):
+    model = Assignments
+    form_class = AddAssignmentForm
+    template_name = "manager/add_assignment.html"
+
+    def post(self, request, *args, **kwargs):
+        date = request.POST.get("date")
+        time = request.POST.get("time")
 
 
 
