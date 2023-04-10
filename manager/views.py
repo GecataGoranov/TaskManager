@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -24,7 +24,6 @@ def index(request):
 
 
         if category_to_remove_str:=request.POST.get("category"):
-            Categories.objects.all().delete()
             try:
                 category_to_remove = Categories.objects.get(creator=request.user, category=category_to_remove_str)
                 category_to_remove.delete()
@@ -152,10 +151,26 @@ class AddAssignmentCreateView(CreateView):
     form_class = AddAssignmentForm
     template_name = "manager/add_assignment.html"
 
-    def post(self, request, *args, **kwargs):
-        date = request.POST.get("date")
-        time = request.POST.get("time")
+    def form_valid(self, form):
 
+        assignment = form.save(commit=False)
+
+        if assignment.category:
+            pass
+        else:
+            new_category = Categories.objects.create(creator=self.request.user, category=self.request.POST.get("category"))
+            new_category.save()
+            assignment.category = new_category
+
+            assignment.creator = self.request.user
+
+            due_date = self.request.POST.get("date")
+            due_time = self.request.POST.get("time")
+            assignment.due_time = datetime.datetime.strptime(f"{due_date} {due_time}:00", "%Y-%m-%d %H %M %S")
+            
+            assignment.save()
+
+            return redirect(self.success_url)
 
 
 class CompletedListView(ListView):
@@ -167,13 +182,11 @@ class CompletedListView(ListView):
         q = self.request.GET.get("q") if self.request.GET.get("q") is not None else ""
         return Assignments.objects.filter(creator=self.request.user.id, completed=True, category__category__icontains=q)
 
- 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["page"] = "completed"
         context["categories"] = Categories.objects.filter(creator=self.request.user.id)
         return context
-
 
     def get(self, request, *args, **kwargs):
         pk = request.GET.get("pk")
@@ -183,4 +196,10 @@ class CompletedListView(ListView):
             newly_completed_assignment.save()     
         return super().get(request, *args, **kwargs)   
 
-
+    def post(self, request):
+        category_to_remove_str = request.POST.get("category")            
+        category_to_remove = get_object_or_404(Categories, creator=request.user, category=category_to_remove_str)
+        category_to_remove.delete()
+        messages.success(request, f"Category {category_to_remove_str} was successfully removed.")
+        context = self.get_context_data()
+        return render(request, "manager/completed.html", context)
