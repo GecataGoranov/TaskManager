@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.utils import timezone
 from django.views.generic import ListView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 
 import datetime
 
@@ -21,7 +21,6 @@ def index(request):
     q = request.GET.get("q") if request.GET.get("q") != None else ""
 
     if request.method == "POST":
-
 
         if category_to_remove_str:=request.POST.get("category"):
             try:
@@ -59,6 +58,16 @@ def index(request):
         "now":now,
         "add_assignment_form":add_assignment_form,
         "categories":categories,})
+
+
+class IndexView(ListView, UpdateView):
+    model = Assignments
+    template_name = "manager/index.html"
+    fields = ["description"]
+
+    def get_queryset(self):
+        ...
+
 
 
 def loginPage(request):
@@ -114,51 +123,20 @@ def registerPage(request):
     })
 
 
-def add_assignment(request):
-    if request.method == "POST":
-        form = AddAssignmentForm(request.POST)
-        date = request.POST.get("date")
-        time = request.POST.get("time")
-
-        if form.is_valid():
-            assignment = form.save(commit=False)
-            try:
-                if assignment.category:
-                    pass
-            except:
-                new_category = Categories.objects.create(creator=request.user, category=request.POST.get("create_category"))
-                new_category.save()
-                assignment.category = new_category
-            
-            assignment.creator = request.user
-            due_date = request.POST["date"]
-            due_time = request.POST["time"]
-            assignment.due_time = datetime.datetime.strptime(f"{due_date} {due_time}:00", "%Y-%m-%d %H:%M:%S")
-            assignment.save()
-            return redirect("index")
-
-        
-    add_assignment_form = AddAssignmentForm()
-    return render(request, "manager/add_assignment.html", {
-        "page":"add",
-        "add_assignment_form":add_assignment_form,
-    })
-
-
-
 class AddAssignmentCreateView(CreateView):
     model = Assignments
     form_class = AddAssignmentForm
     template_name = "manager/add_assignment.html"
+    success_url = "/"
 
     def form_valid(self, form):
 
         assignment = form.save(commit=False)
-
-        if assignment.category:
-            pass
-        else:
-            new_category = Categories.objects.create(creator=self.request.user, category=self.request.POST.get("category"))
+        try:                
+            if assignment.category:
+                pass
+        except:
+            new_category = Categories.objects.create(creator=self.request.user, category=self.request.POST.get("create_category"))
             new_category.save()
             assignment.category = new_category
 
@@ -166,11 +144,16 @@ class AddAssignmentCreateView(CreateView):
 
             due_date = self.request.POST.get("date")
             due_time = self.request.POST.get("time")
-            assignment.due_time = datetime.datetime.strptime(f"{due_date} {due_time}:00", "%Y-%m-%d %H %M %S")
+            assignment.due_time = datetime.datetime.strptime(f"{due_date} {due_time}:00", "%Y-%m-%d %H:%M:%S")
             
             assignment.save()
 
             return redirect(self.success_url)
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["page"] = "add"
+        return context
 
 
 class CompletedListView(ListView):
